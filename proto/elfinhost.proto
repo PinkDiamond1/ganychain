@@ -1,0 +1,110 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "/proto";
+
+
+//message GanyTx {
+//    bytes tx_bytes = 1; // stochasticPaymentBytes||bulletinBytes||authProofBytes||authChallengeBytes
+//    TxFieldLengths tx_field_lengths = 2;
+//}
+//
+//message TxFieldLengths {
+//  uint32 stochastic_payment_bytes = 1;
+//  uint32 bulletin_bytes = 2;
+//  uint32 auth_proof_bytes = 3;
+//  uint32 auth_challenge_bytes = 4;
+//}
+
+message StochasticPayment {
+  bytes  validator_pubkey_hash_root = 1;
+  int64  due_time = 2;
+  uint32 probability = 3;
+  bytes  nonces = 4;
+  bytes  payee = 5;
+  bytes  amount_to_payee = 6;
+  bytes  amount_to_validator = 7;
+  bytes  signature = 8;
+}
+
+//message BulletinExt {
+//  Bulletin bulletin = 1;
+//  optional AuthProof auth_proof = 2;
+//  optional AuthChallenge auth_challenge = 3;
+//  repeated bytes historical_id_list = 4;
+//}
+
+message Bulletin {
+  enum BulletinType {
+    COMMENT = 0;
+    COLUMN = 1;
+    BLOG = 2;
+    MESSAGE = 3;
+    CENSOR = 4;
+  }
+  BulletinType type = 1;
+  bytes topic = 2;
+  int64 timestamp = 3;
+  int64 duration = 4;
+  optional bytes old_sn = 5;
+  bytes from = 6;
+  string content_type = 7;
+  repeated bytes content_list = 8;
+  int64 censored_start = 9;
+  int64 censored_end = 10;
+}
+
+message AndOfConditions {
+  repeated int32 condition_numbers = 1;
+}
+
+message AuthChallenge {
+  repeated DynamicSetChallenge dynamic_set_challenge_list = 1;
+  repeated StaticSetChallenge static_set_challenge_list = 2;
+  repeated StochasticPayCondition stochastic_pay_cond_list = 3;
+  repeated AndOfConditions or_of_and_of_conditions = 4;
+}
+
+message DynamicSetChallenge {
+  bytes  chain_id = 1;
+  bytes  target_contract = 2;
+  uint32 function_selector = 3;
+  bytes  out_data = 4;
+  bytes  authenticator = 5;
+  int64  max_time_difference = 6;
+}
+
+message StaticSetChallenge {
+  bytes root = 1;
+}
+
+message StochasticPayCondition {
+  bytes  payee = 1;
+  uint32 probability = 2;
+  bytes  amount = 3;
+}
+
+message AuthProof {
+  repeated DynamicSetProof dynamic_set_proof_list = 1;
+  repeated StaticSetProof static_set_proof_list = 2;
+  repeated StochasticPayCondition stochastic_pay_cond_list = 3;
+  repeated AndOfConditions or_of_and_of_conditions = 4;
+}
+
+message DynamicSetProof {
+  bytes  chain_id = 1;
+  bytes  target_contract = 2;
+  uint32 function_selector = 3;
+  bytes  out_data = 4;
+  bytes  authenticator = 5;
+  int64  max_time_difference = 6;
+  int64  timestamp = 7;
+  optional bytes authenticator_signature = 8;
+}
+
+message StaticSetProof {
+  bytes root = 1;
+  repeated bytes proof = 2;
+}
+
+

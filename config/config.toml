@@ -1,0 +1,15 @@
+[tendermint]
+shards = 2
+shard-ports = ["36657", "46657"]
+
+[server]
+ports = ["26658", "26659"]
+
+[rpc]
+http-addr = "tcp://:18545"
+https-addr = "off"
+http-api = "gany"
+
+[follower]
+smartbch-rpc-url = "http://0.0.0.0:8545"
+smartbch-ws-url = "ws://0.0.0.0:8546"
